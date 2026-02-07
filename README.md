@@ -401,4 +401,7 @@ For questions, issues, or feature requests:
 
 ---
 
+## 👨‍💻 Author
+Vaibhav Thammaiah  
+
 **Made with ❤️ for better load testing workflows**
