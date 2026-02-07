@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Load Test Dashboard</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@10.3.0/dist/gridstack.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div style="font-size: 22px; font-weight: 700;">Load Test Dashboard</div>
+        <div class="small">Excel input → SQLite history → interactive charts & compare</div>
+      </div>
+      <div class="nav">
+        <a href="/overview">Overview</a>
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/compare">Compare</a>
+      </div>
+    </div>
+    <hr/>
+
+    <div class="page-head">
+      <div>
+        <div class="page-title">
+          <span class="page-icon">📊</span>
+          <div>
+            <div style="font-weight:800; font-size:18px;">Dashboard</div>
+            <div class="page-sub">Explore metrics • Filter by run, endpoint, and load</div>
+          </div>
+        </div>
+      </div>
+      <div id="runChip" class="chip" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="align-items:flex-end;">
+        <div>
+          <div class="small">Run</div>
+          <select id="runSelect"></select>
+        </div>
+        <div>
+          <div class="small">Users load (optional)</div>
+          <input id="loadInput" placeholder="e.g. 50" />
+        </div>
+        <div>
+          <div class="small">Endpoint (optional exact match)</div>
+          <input id="endpointInput" placeholder="/api/search" />
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-end;">
+          <!-- PRIMARY ACTION -->
+          <button id="applyBtn" class="primary">Apply</button>
+
+          <!-- SECONDARY / QUIET ACTIONS -->
+          <button id="saveLayoutBtn">Save layout</button>
+          <button id="resetLayoutBtn">Reset layout</button>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 10px;">
+        <label class="small"><input type="checkbox" id="toggleLegend" checked> Legend</label>
+        <label class="small"><input type="checkbox" id="toggleAnim" checked> Animations</label>
+        <label class="small"><input type="checkbox" id="toggleAxisTitles" checked> Axis titles</label>
+      </div>
+    </div>
+
+    <div class="gridstack-wrap">
+      <div class="grid-stack" id="grid"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gridstack@10.3.0/dist/gridstack-all.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
+  <script>
+    function setActiveNav(){
+      const path = window.location.pathname || '/';
+      document.querySelectorAll('.nav a').forEach(a=>{
+        const href = a.getAttribute('href');
+        if (href && (path === href || (path === '/' && href === '/overview')))
+          a.classList.add('active');
+      });
+    }
+    setActiveNav();
+  </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Load Test Dashboard</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gridstack@10.3.0/dist/gridstack.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div style="font-size: 22px; font-weight: 700;">Load Test Dashboard</div>
+        <div class="small">Excel input → SQLite history → interactive charts & compare</div>
+      </div>
+      <div class="nav">
+        <a href="/overview" class="active">Overview</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/compare">Compare</a>
+      </div>
+    </div>
+    <hr/>
+
+    <div class="page-head">
+      <div>
+        <div class="page-title">
+          <span class="page-icon">🧭</span>
+          <div>
+            <div style="font-weight:800; font-size:18px;">Overview</div>
+            <div class="page-sub">Release readiness • Executive summary • Key risks</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="card" style="flex: 1 1 520px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap: 10px;">
+          <div>
+            <div style="font-weight:700; margin-bottom: 6px;">Latest Run</div>
+            <div class="small">Pick a run to view KPIs and the executive summary.</div>
+          </div>
+          <div id="statusBadge"></div>
+        </div>
+
+        <div class="row" style="align-items:flex-end; margin-top: 10px;">
+          <div>
+            <div class="small">Select run</div>
+            <select id="runSelect"></select>
+          </div>
+
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <label class="small" style="display:flex; gap:6px; align-items:center;">
+              <input type="checkbox" id="showExcluded" /> Show excluded
+            </label>
+
+            <!-- PRIMARY ACTION -->
+            <button id="refreshBtn" class="primary">🔄 Refresh</button>
+
+            <!-- SECONDARY / NEUTRAL -->
+            <button id="setBaselineBtn" title="Marks selected run as baseline">⭐ Set as baseline</button>
+            <button id="excludeBtn" title="Hide this run from comparisons">🚫 Exclude</button>
+            <button id="includeBtn" title="Re-include this run" style="display:none;">✅ Include</button>
+
+            <!-- DANGER -->
+            <button id="deleteBtn" class="danger" title="Permanently delete this run">🗑️ Delete</button>
+          </div>
+        </div>
+
+        <div id="runMeta" class="small" style="margin-top: 10px;"></div>
+
+        <div class="row" style="margin-top: 12px;">
+          <div class="card" style="background: rgba(255,255,255,0.03);">
+            <div class="small">Endpoints</div>
+            <div id="kpiEndpoints" class="kpi">—</div>
+          </div>
+          <div class="card" style="background: rgba(255,255,255,0.03);">
+            <div class="small">Loads</div>
+            <div id="kpiLoads" class="kpi">—</div>
+          </div>
+          <div class="card" style="background: rgba(255,255,255,0.03);">
+            <div class="small">Overall Avg (ms)</div>
+            <div id="kpiAvg" class="kpi">—</div>
+          </div>
+        </div>
+
+        <hr/>
+
+        <div style="font-weight:700; margin-bottom: 8px;">Executive Summary</div>
+        <div class="row">
+          <div class="card" style="background: rgba(255,255,255,0.03);">
+            <div class="small">SLA failures</div>
+            <div id="slaFails" class="kpi">—</div>
+            <div id="slaInfo" class="small-muted"></div>
+          </div>
+          <div class="card" style="background: rgba(255,255,255,0.03);">
+            <div class="small">Regressions vs baseline</div>
+            <div id="regCount" class="kpi">—</div>
+            <div id="regInfo" class="small-muted"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px;">
+          <div class="small">Top risks</div>
+          <ul id="riskList" class="risk-list"></ul>
+        </div>
+      </div>
+
+      <div class="card" style="flex: 1 1 520px;">
+        <div style="font-weight:700; margin-bottom: 8px;">Top 10 Slowest (by avg)</div>
+        <div class="table-wrap">
+          <table id="slowTable" class="display" style="width:100%">
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>Load</th>
+                <th>Avg</th>
+                <th>Min</th>
+                <th>Max</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <hr/>
+
+        <div style="font-weight:700; margin-bottom: 8px;">Load vs Latency</div>
+        <div class="small-muted" style="margin-bottom: 8px;">
+          Overall latency trend by user load (avg of endpoints per load).
+        </div>
+        <canvas id="loadLatencyChart" height="160"></canvas>
+
+        <div class="row" style="margin-top: 12px;">
+          <div class="card" style="background: rgba(255,255,255,0.03); flex: 1 1 360px;">
+            <div style="font-weight:700; margin-bottom: 6px;">Latency Distribution Snapshot</div>
+            <div class="small-muted" style="margin-bottom: 8px;">
+              Avg vs Max across endpoints (current filters: full run).
+            </div>
+            <canvas id="distChart" height="140"></canvas>
+          </div>
+
+          <div class="card" style="background: rgba(255,255,255,0.03); flex: 1 1 520px;">
+            <div style="font-weight:700; margin-bottom: 6px;">SLA Violations</div>
+            <div id="slaOkMsg" class="small-muted" style="display:none;">
+              All endpoints are within SLA thresholds.
+            </div>
+            <div class="table-wrap">
+              <table id="slaTable" class="display" style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Endpoint</th>
+                    <th>Load</th>
+                    <th>Avg</th>
+                    <th>Max</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/overview.js') }}"></script>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gridstack@10.3.0/dist/gridstack-all.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+
+  <script>
+    function setActiveNav(){
+      const path = window.location.pathname || '/';
+      document.querySelectorAll('.nav a').forEach(a=>{
+        const href = a.getAttribute('href');
+        if (href && (path === href || (path === '/' && href === '/overview')))
+          a.classList.add('active');
+      });
+    }
+    setActiveNav();
+  </script>
+</body>
+</html>

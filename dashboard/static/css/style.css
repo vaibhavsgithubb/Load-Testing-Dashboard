@@ -1,0 +1,579 @@
+:root{
+  /* Surfaces */
+  --bg: #0b1020;
+  --panel: rgba(255,255,255,0.04);
+  --panel-2: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.10);
+
+  /* Text */
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.62);
+
+  /* Accent (brand) */
+  --accent: #6ea8fe;          /* soft blue */
+  --accent-2: #9b7bff;        /* purple for gradients */
+
+  /* Status */
+  --good: #42f58d;
+  --warn: #ffc94a;
+  --bad:  #ff5c73;
+
+  /* Shadows */
+  --shadow: 0 10px 28px rgba(0,0,0,0.35);
+  --shadow-2: 0 14px 36px rgba(0,0,0,0.45);
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+a{ color: var(--accent); }
+
+.container{
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 8px 0 2px;
+}
+
+.small{ color: var(--muted); font-size: 12px; }
+.small-muted{ color: var(--muted); font-size: 12px; }
+
+.row{ display:flex; gap: 12px; flex-wrap: wrap; }
+.row > *{ flex: 1 1 280px; }
+
+hr{
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 14px 0;
+  opacity: 0.9;
+}
+
+/* ---------- Navigation ---------- */
+.nav a{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text);
+  opacity: 0.82;
+  border: 1px solid transparent;
+  transition: opacity 150ms ease, background 150ms ease, transform 150ms ease, border-color 150ms ease;
+}
+
+.nav a:hover{
+  opacity: 1;
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-1px);
+}
+
+.nav a.active{
+  opacity: 1;
+  background: rgba(110,168,254,0.12);
+  border-color: rgba(110,168,254,0.24);
+}
+
+.nav a.active::after{
+  content:"";
+  position:absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* ---------- Page Header ---------- */
+.page-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin: 10px 0 12px;
+}
+
+.page-title{ display:flex; align-items:flex-start; gap: 10px; }
+.page-icon{ font-size: 20px; line-height: 1; margin-top: 2px; }
+.page-sub{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+/* ---------- Chip (Run context) ---------- */
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(110,168,254,0.18);
+  background: rgba(110,168,254,0.08);
+  color: var(--text);
+  font-size: 12px;
+  max-width: 520px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip .label{ color: var(--muted); }
+
+/* ---------- Cards ---------- */
+.card{
+  background: var(--panel);                 /* ✅ fixed: was var(--card) */
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.card:hover{
+  border-color: rgba(110,168,254,0.26);
+  box-shadow: var(--shadow-2), 0 0 0 1px rgba(110,168,254,0.08);
+}
+
+/* ---------- Inputs / Buttons ---------- */
+select, input, button{
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 12px;
+  outline: none;
+}
+
+select:focus, input:focus{
+  border-color: rgba(110,168,254,0.35);
+  box-shadow: 0 0 0 3px rgba(110,168,254,0.15);
+}
+
+button{
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+button:hover{
+  border-color: rgba(110,168,254,0.30);
+  background: rgba(110,168,254,0.10);
+  transform: translateY(-1px);
+}
+
+button:active{
+  transform: translateY(0px);
+}
+
+button:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Table wrapper ---------- */
+.table-wrap{
+  overflow-x: auto;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.12);
+}
+
+/* ---------- Badges ---------- */
+.badge{
+  display:inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.badge.green{
+  background: rgba(66,245,141,0.12);
+  border: 1px solid rgba(66,245,141,0.35);
+}
+
+.badge.amber{
+  background: rgba(255,201,74,0.12);
+  border: 1px solid rgba(255,201,74,0.35);
+}
+
+.badge.red{
+  background: rgba(255,92,115,0.12);
+  border: 1px solid rgba(255,92,115,0.35);
+}
+
+/* ---------- KPIs ---------- */
+.kpi{
+  font-size: 22px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.risk-list{
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--text);
+}
+
+.ok-msg{
+  color: rgba(66,245,141,0.85);
+  font-size: 12px;
+}
+
+/* ---------- Tags ---------- */
+.tag{
+  display:inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--muted);
+}
+
+.tag.excluded{
+  border-color: rgba(255,201,74,0.35);
+  color: rgba(255,201,74,0.90);
+}
+
+/* ---------- GridStack ---------- */
+.gridstack-wrap{ margin-top: 14px; }
+
+/* ---------- DataTables modern look ---------- */
+table.dataTable{
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+table.dataTable thead th{
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(110,168,254,0.22) !important; /* accent line */
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+table.dataTable tbody td{
+  border-top: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+table.dataTable tbody tr:nth-child(odd){
+  background: rgba(255,255,255,0.015);
+}
+
+table.dataTable tbody tr:hover{
+  background: rgba(110,168,254,0.08) !important;
+}
+
+/* Right-align numeric-ish columns in standard tables */
+table.dataTable tbody td:nth-child(1),
+table.dataTable tbody td:nth-child(3),
+table.dataTable tbody td:nth-child(4),
+table.dataTable tbody td:nth-child(5){
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* === VISUAL UPGRADE v3 (more noticeable) === */
+
+/* 1) Background depth (huge impact) */
+body{
+  background:
+    radial-gradient(1200px 700px at 15% -10%, rgba(110,168,254,0.18), transparent 60%),
+    radial-gradient(900px 600px at 85% 0%, rgba(155,123,255,0.14), transparent 55%),
+    radial-gradient(900px 700px at 50% 115%, rgba(66,245,141,0.08), transparent 60%),
+    var(--bg);
+}
+
+/* 2) Glassier cards + stronger separation (huge impact) */
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.035));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.48);
+  backdrop-filter: blur(6px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle top accent line on cards */
+.card::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0;
+  height:2px;
+  background: linear-gradient(90deg, rgba(110,168,254,0.0), rgba(110,168,254,0.9), rgba(155,123,255,0.75), rgba(110,168,254,0.0));
+  opacity: 0.85;
+}
+
+/* stronger hover glow so it “feels alive” */
+.card:hover{
+  border-color: rgba(110,168,254,0.34);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.55), 0 0 0 1px rgba(110,168,254,0.10);
+}
+
+/* 3) Nav more “app-like” */
+.nav a{
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.nav a:hover{
+  background: rgba(110,168,254,0.10);
+  border-color: rgba(110,168,254,0.22);
+}
+
+.nav a.active{
+  color: rgba(255,255,255,0.95);
+  background: rgba(110,168,254,0.14);
+  border-color: rgba(110,168,254,0.30);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.nav a.active::after{
+  height: 3px;
+  bottom: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  opacity: 1;
+}
+
+/* 4) Buttons: make primary actions look primary (big impact) */
+button{
+  border-color: rgba(255,255,255,0.14);
+}
+
+button.primary{
+  background: linear-gradient(90deg, rgba(110,168,254,0.95), rgba(155,123,255,0.85));
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(255,255,255,0.96);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+button.primary:hover{
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+button.danger{
+  background: rgba(255,92,115,0.12);
+  border-color: rgba(255,92,115,0.35);
+}
+
+button.danger:hover{
+  background: rgba(255,92,115,0.18);
+  border-color: rgba(255,92,115,0.45);
+}
+
+/* 5) Chip: make it look like a real context pill */
+.chip{
+  background: linear-gradient(90deg, rgba(110,168,254,0.14), rgba(155,123,255,0.10));
+  border-color: rgba(110,168,254,0.28);
+}
+
+/* 6) Table header contrast + nicer hover */
+.table-wrap{
+  background: rgba(0,0,0,0.18);
+  border-color: rgba(255,255,255,0.12);
+}
+
+table.dataTable thead th{
+  background: rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(110,168,254,0.30) !important;
+  color: rgba(255,255,255,0.70);
+}
+
+table.dataTable tbody tr:hover{
+  background: rgba(110,168,254,0.10) !important;
+}
+
+/* 7) KPI pop */
+.kpi{
+  text-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+/* Hint to the browser that the page supports dark form controls */
+:root { color-scheme: dark; }
+
+/* Some browsers honor this for native selects */
+select, option {
+  background-color: #0b1020;
+  color: rgba(255,255,255,0.92);
+}
+
+/* card header with a right-side icon button */
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.icon-btn{
+  width: 34px;
+  height: 34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+}
+
+.icon-btn:hover{
+  background: rgba(110,168,254,0.12);
+  border-color: rgba(110,168,254,0.24);
+}
+
+/* Focus / maximize mode */
+.focus-overlay{
+  position: fixed;
+  inset: 18px;
+  z-index: 9999; 
+  background: linear-gradient(
+    180deg,
+    #0b1020 0%,
+    #0d1226 100%
+  );
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+  display:flex;
+  flex-direction:column;
+}
+
+.focus-overlay .table-wrap{
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+.focus-overlay .card-head{
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+
+/* Optional: lock page scroll while focused */
+body.focus-lock{ overflow: hidden; }
+
+/* hide old drag hint if it still exists anywhere */
+.small.drag-hint { display: none !important; }
+
+/* FOCUS / MAXIMIZE — single authoritative definition (paste once) */
+.focus-overlay{
+  position: fixed;
+  inset: 18px;
+  z-index: 99999;                       /* very high so it sits above everything */
+  /* opaque gradient: prevents content underneath from showing through */
+  background: linear-gradient(180deg,#0b1020 0%, #0d1226 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.65);
+  display: flex;
+  flex-direction: column;
+  /* important to avoid underlying bleed: force a new stacking context */
+  isolation: isolate;
+}
+
+/* Make sure the maximized card itself is visually solid */
+.focus-overlay > .card,
+.focus-overlay .card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.6);
+  padding: 16px;
+  border-radius: 14px;
+}
+
+/* Card header inside overlay */
+.focus-overlay .card-head{
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+/* Table/chart area should stretch and scroll if needed */
+.focus-overlay .table-wrap,
+.focus-overlay .chart-wrap,
+.focus-overlay canvas,
+.focus-overlay .grid-stack {
+  flex: 1 1 auto;
+  min-height: 0;          /* allow flex children to shrink and scrolling to work */
+  overflow: auto;
+  background: transparent;
+}
+
+/* Lock body scroll while focused */
+body.focus-lock { overflow: hidden !important; }
+
+/* If you use GridStack maximize class, ensure it sits on top and is opaque */
+.grid-stack-item.is-maximized{
+  position: fixed !important;
+  inset: 18px !important;
+  width: auto !important;
+  height: auto !important;
+  z-index: 99999 !important;
+  background: linear-gradient(180deg,#0b1020 0%, #0d1226 100%);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.65);
+  overflow: auto !important;
+}
+
+/* Ensure the grid-stack content inside maximized item is solid */
+.grid-stack-item.is-maximized > .grid-stack-item-content{
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  height: 100% !important;
+  padding: 14px;
+}
+
+.grid-stack-item-content.card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+#avgChartWrap, #maxChartWrap{
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#avgChartWrap canvas, #maxChartWrap canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.widget-body{
+  margin-top: 10px;
+  height: calc(100% - 44px); /* header space */
+}
+.widget-body canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* --- Add a small gap ONLY above the "All Results" widget (data-id="w3") --- */
+.grid-stack-item[data-id="w3"]{
+  margin-top: 20px !important;              /* gap size */
+}
+
+/* compensate so the card still fits inside its grid cell (prevents overlap below) */
+.grid-stack-item[data-id="w3"] > .grid-stack-item-content{
+  height: calc(100% - 20px) !important;
+}
+
